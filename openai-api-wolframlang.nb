@@ -1,0 +1,365 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 12.1' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     13832,        357]
+NotebookOptionsPosition[     12106,        317]
+NotebookOutlinePosition[     12511,        333]
+CellTagsIndexPosition[     12468,        330]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["OpenAI API + WolframLang", "Title",
+ CellChangeTimes->{{3.806954047170431*^9, 
+  3.806954053937583*^9}},ExpressionUUID->"94162ea6-caff-4346-bc58-\
+cc6452bdb91b"],
+
+Cell["A simple set of functions and utilities", "Subtitle",
+ CellChangeTimes->{{3.806954059095804*^9, 
+  3.80695406612573*^9}},ExpressionUUID->"cc821316-2b40-4ca5-89ea-\
+3b432c34742e"],
+
+Cell[CellGroupData[{
+
+Cell["Main API call", "Section",
+ CellChangeTimes->{{3.806954069087797*^9, 
+  3.806954071887405*^9}},ExpressionUUID->"96762c2c-0d2e-4d27-aa6f-\
+d369827e4a38"],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Put your API key in file or you can just set it in the API call\
+\>", "Subsection",
+ CellChangeTimes->{{3.806954099504086*^9, 
+  3.806954113542392*^9}},ExpressionUUID->"6ff2fb1b-2e95-405d-a7dd-\
+797ca2c76601"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"apiKey", "=", 
+   RowBox[{"ToString", "@", 
+    RowBox[{"Import", "[", 
+     RowBox[{
+      RowBox[{"NotebookDirectory", "[", "]"}], "<>", 
+      "\"\<openapikey.txt\>\""}], "]"}]}]}], ";"}]], "Input",
+ CellLabel->"In[2]:=",ExpressionUUID->"58598b00-9fa6-45e2-91a6-609137593e1d"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Function to call the API", "Subsection",
+ CellChangeTimes->{{3.806954117289918*^9, 
+  3.806954122304284*^9}},ExpressionUUID->"e238b62a-2f8c-45b1-ad7a-\
+c154bee2cfb2"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"Options", "[", "gpt3", "]"}], "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"maxtokens", "\[Rule]", "25"}], ",", 
+     RowBox[{"temperature", "\[Rule]", ".5"}], ",", 
+     RowBox[{"topp", "\[Rule]", "1"}], ",", 
+     RowBox[{"n", "\[Rule]", "1"}], ",", 
+     RowBox[{"stream", "\[Rule]", "False"}], ",", 
+     RowBox[{"logprobs", "\[Rule]", "0"}], ",", 
+     RowBox[{"stop", "\[Rule]", "\"\<\\n\\n\>\""}], ",", 
+     RowBox[{"engine", "\[Rule]", "\"\<davinci\>\""}], ",", 
+     RowBox[{"apikey", "->", "apiKey"}]}], "}"}]}], ";", 
+  RowBox[{
+   RowBox[{"gpt3", "[", 
+    RowBox[{"query_", ",", 
+     RowBox[{"OptionsPattern", "[", "]"}]}], "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"prompt", "=", "query"}], "}"}], ",", 
+     RowBox[{
+      RowBox[{"req", "=", 
+       RowBox[{"HTTPRequest", "[", 
+        RowBox[{
+         RowBox[{"URL", "[", 
+          RowBox[{
+          "\"\<https://api.openai.com/v1/engines/\>\"", " ", "<>", " ", 
+           RowBox[{"OptionValue", "[", "engine", "]"}], "<>", 
+           "\"\</completions\>\""}], "]"}], ",", " ", 
+         RowBox[{"<|", 
+          RowBox[{
+           RowBox[{"\"\<Body\>\"", "\[Rule]", " ", 
+            RowBox[{"ExportString", "[", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"\"\<prompt\>\"", "\[Rule]", " ", "prompt"}], ",", 
+                RowBox[{"\"\<max_tokens\>\"", "\[Rule]", 
+                 RowBox[{"OptionValue", "[", "maxtokens", "]"}]}], ",", 
+                RowBox[{"\"\<temperature\>\"", "\[Rule]", 
+                 RowBox[{"OptionValue", "[", "temperature", "]"}]}], ",", 
+                RowBox[{"\"\<top_p\>\"", "\[Rule]", 
+                 RowBox[{"OptionValue", "[", "topp", "]"}]}], ",", 
+                RowBox[{"\"\<n\>\"", "\[Rule]", 
+                 RowBox[{"OptionValue", "[", "n", "]"}]}], ",", 
+                RowBox[{"\"\<stop\>\"", "\[Rule]", 
+                 RowBox[{"OptionValue", "[", "stop", "]"}]}], ",", 
+                RowBox[{"\"\<logprobs\>\"", "\[Rule]", 
+                 RowBox[{"OptionValue", "[", "logprobs", "]"}]}], ",", 
+                RowBox[{"\"\<stream\>\"", "\[Rule]", 
+                 RowBox[{"OptionValue", "[", "stream", "]"}]}]}], "}"}], ",", 
+              "\"\<JSON\>\""}], "]"}]}], ",", 
+           RowBox[{"\"\<Headers\>\"", "\[Rule]", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"\"\<Authorization\>\"", "\[Rule]", "apiKey"}], ",", 
+              RowBox[{
+              "\"\<Content-Type\>\"", "\[Rule]", 
+               "\"\<application/json\>\""}]}], "}"}]}], ",", " ", 
+           RowBox[{"\"\<Method\>\"", " ", "\[Rule]", " ", "\"\<POST\>\""}]}], 
+          "|>"}]}], "]"}]}], ";", 
+      RowBox[{"res", "=", 
+       RowBox[{"URLRead", "[", 
+        RowBox[{"req", ",", " ", 
+         RowBox[{"{", "\"\<Body\>\"", "}"}]}], "]"}]}], ";", 
+      RowBox[{"StringTrim", "[", 
+       RowBox[{"ReplaceAll", "[", 
+        RowBox[{"\"\<text\>\"", ",", 
+         RowBox[{"ReplaceAll", "[", 
+          RowBox[{"\"\<choices\>\"", ",", 
+           RowBox[{"ImportString", "[", 
+            RowBox[{
+             RowBox[{"res", "[", "\"\<Body\>\"", "]"}], ",", "\"\<JSON\>\""}],
+             "]"}]}], "]"}]}], "]"}], "]"}]}]}], "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{3.8069540934998913`*^9},
+ CellLabel->"In[3]:=",ExpressionUUID->"3ecb44fe-aad6-4bc6-a738-197bac10686a"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Image Captioning with GPT3 and Wolfram Image Identify", "Section",
+ CellChangeTimes->{{3.806959412283105*^9, 
+  3.806959427307766*^9}},ExpressionUUID->"ecbd836e-22e1-416c-b192-\
+275cf4dbabab"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"imageCaption", "[", "i_Image", "]"}], ":=", "\[IndentingNewLine]", 
+  
+  RowBox[{"With", "[", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"detections", "=", 
+      RowBox[{"Length", "/@", 
+       RowBox[{"ImageCases", "[", 
+        RowBox[{"i", ",", 
+         RowBox[{"AcceptanceThreshold", "\[Rule]", ".2"}]}], "]"}]}]}], "}"}],
+     ",", "\[IndentingNewLine]", 
+    RowBox[{"If", "[", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"Length", "[", "detections", "]"}], "==", "0"}], ",", 
+      "\[IndentingNewLine]", "\"\<An image with no identified objects.\>\"", 
+      ",", "\[IndentingNewLine]", 
+      RowBox[{"StringJoin", "[", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"RandomChoice", "[", 
+         RowBox[{"{", 
+          RowBox[{
+          "\"\<This is a wild story. \>\"", ",", 
+           "\"\<You will never believe what happens. \>\"", ",", 
+           "\"\<It begins so simple and then it gets crazy.\>\"", ",", 
+           "\"\<One day there was a \>\""}], "}"}], "]"}], ",", 
+        RowBox[{"RandomChoice", "[", 
+         RowBox[{"{", 
+          RowBox[{
+          "\"\<scene\>\"", ",", "\"\<situation\>\"", ",", "\"\<event\>\"", 
+           ",", "\"\<circumstance\>\""}], "}"}], "]"}], ",", "\"\< with \>\"",
+         ",", "\[IndentingNewLine]", 
+        RowBox[{"Riffle", "[", 
+         RowBox[{
+          RowBox[{"Riffle", "[", 
+           RowBox[{
+            RowBox[{"KeyValueMap", "[", "\[IndentingNewLine]", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"StringRiffle", "[", 
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"IntegerName", "[", "#2", "]"}], ",", 
+                  RowBox[{"Pluralize", "[", 
+                   RowBox[{
+                    RowBox[{"#1", "[", "\"\<Name\>\"", "]"}], ",", "#2"}], 
+                   "]"}]}], "}"}], "]"}], "&"}], ",", "\[IndentingNewLine]", 
+              "detections"}], "\[IndentingNewLine]", "]"}], ",", "\"\<, \>\"",
+             ",", 
+            RowBox[{"{", 
+             RowBox[{"2", ",", 
+              RowBox[{"-", "3"}], ",", "2"}], "}"}]}], "]"}], ",", 
+          "\"\< and \>\"", ",", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"-", "2"}], ",", 
+            RowBox[{"-", "2"}], ",", "1"}], "}"}]}], "]"}], ",", 
+        "\[IndentingNewLine]", "\"\<.\>\"", ",", "\"\< Possible \>\"", ",", 
+        RowBox[{"CommonName", "[", 
+         RowBox[{"ImageIdentify", "[", 
+          RowBox[{"i", ",", 
+           RowBox[{"AcceptanceThreshold", "\[Rule]", ".2"}]}], "]"}], "]"}], 
+        ",", " ", "\"\< among \>\"", ",", " ", 
+        RowBox[{"Riffle", "[", 
+         RowBox[{
+          RowBox[{"ToLowerCase", "@", 
+           RowBox[{"Flatten", "@", 
+            RowBox[{"DominantColors", "[", 
+             RowBox[{"i", ",", "3", ",", 
+              RowBox[{"{", "\"\<NearestHTMLColor\>\"", "}"}]}], "]"}]}]}], 
+          ",", "\"\<, \>\""}], "]"}], ",", " ", "\"\< visions in \>\"", " ", 
+        ",", " ", 
+        RowBox[{"CommonName", "@", 
+         RowBox[{"GeoNearest", "[", 
+          RowBox[{"\"\<City\>\"", ",", 
+           RowBox[{
+            RowBox[{
+            "NetModel", "[", 
+             "\"\<ResNet-101 Trained on YFCC100m Geotagged Data\>\"", "]"}], 
+            "[", "i", "]"}]}], "]"}]}], ",", " ", "\"\<. \>\""}], 
+       "\[IndentingNewLine]", "]"}]}], "\[IndentingNewLine]", "]"}]}], 
+   "\[IndentingNewLine]", "]"}]}]], "Input",ExpressionUUID->"5239b839-4ee6-\
+4a32-a1ea-f8b52fad76ae"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Painting With GPT3", "Section",
+ CellChangeTimes->{{3.8069594942350693`*^9, 
+  3.806959501887973*^9}},ExpressionUUID->"92e05975-349b-4b5a-8fcc-\
+f634cc78d007"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"convertTextToImage", "[", "s_String", "]"}], ":=", 
+  RowBox[{"With", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"imageOut", "=", 
+      RowBox[{"Image", "[", 
+       RowBox[{
+        RowBox[{"Partition", "[", 
+         RowBox[{
+          RowBox[{"Partition", "[", 
+           RowBox[{
+            RowBox[{"Map", "[", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"FromDigits", "[", 
+                RowBox[{"#", ",", "2"}], "]"}], "&"}], ",", 
+              RowBox[{"Partition", "[", 
+               RowBox[{
+                RowBox[{"Flatten", "[", 
+                 RowBox[{"Mod", "[", 
+                  RowBox[{
+                   RowBox[{"ToCharacterCode", "[", "s", "]"}], ",", "2"}], 
+                  "]"}], "]"}], ",", "15"}], "]"}]}], "]"}], ",", "3"}], 
+           "]"}], ",", "5"}], "]"}], ",", "\"\<Bit16\>\""}], "]"}]}], "}"}], 
+    ",", "imageOut"}], "]"}]}]], "Input",
+ CellLabel->"In[7]:=",ExpressionUUID->"840f9d9b-cea1-4fca-bdc1-77d6dde9b470"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"convertTextToImage", "[", 
+  RowBox[{
+   RowBox[{"gpt3", "[", 
+    RowBox[{"\"\<in the course of human events\>\"", ",", 
+     RowBox[{"maxtokens", "\[Rule]", "300"}], ",", 
+     RowBox[{"temperature", "\[Rule]", ".1"}], ",", 
+     RowBox[{"stop", "\[Rule]", "\"\<\\n\\n\\n\>\""}]}], "]"}], "[", 
+   RowBox[{"[", "1", "]"}], "]"}], "]"}]], "Input",
+ CellLabel->"In[8]:=",ExpressionUUID->"23655f5c-3dfb-4a5e-97c2-95a7c4bfcd8a"],
+
+Cell[BoxData[
+ GraphicsBox[
+  TagBox[RasterBox[
+    RawArray["UnsignedInteger16",{{{4601, 32037, 6439}, {18581, 25174, 
+     5530}, {3466, 8727, 30532}, {29963, 181, 10482}, {22700, 5026, 
+     21573}}, {{15140, 17998, 3464}, {21929, 22651, 2155}, {1698, 32435, 
+     8593}, {13665, 18488, 18732}, {27140, 18005, 21441}}, {{1705, 25138, 
+     27020}, {25961, 6409, 26858}, {10405, 604, 17592}, {2237, 3684, 27029}, {
+     10919, 11306, 17969}}, {{26821, 22661, 20994}, {10900, 21715, 2022}, {
+     13635, 21068, 9761}, {6441, 4438, 8725}, {10861, 6202, 21292}}, {{19990, 
+     13402, 21818}, {20009, 18644, 15815}, {9520, 26280, 9666}, {22833, 17233,
+      6756}, {22170, 11298, 22051}}, {{2094, 8145, 29352}, {19300, 11283, 
+     12634}, {14102, 8874, 21908}, {16934, 1945, 11089}, {5718, 3423, 
+     14410}}}], {{0, 6.}, {5., 0}}, {0, 65535},
+    ColorFunction->RGBColor],
+   BoxForm`ImageTag["Bit16", ColorSpace -> Automatic, Interleaving -> True],
+   Selectable->False],
+  DefaultBaseStyle->"ImageGraphics",
+  ImageSizeRaw->{5., 6.},
+  PlotRange->{{0, 5.}, {0, 6.}}]], "Output",
+ CellChangeTimes->{3.806960503490465*^9},
+ CellLabel->"Out[8]=",ExpressionUUID->"10ba5ced-5eb8-44c6-8fdc-e5eba8888de9"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1080., 564.375},
+WindowMargins->{{Automatic, 95.625}, {106.875, Automatic}},
+FrontEndVersion->"12.1 for Linux x86 (64-bit) (June 19, 2020)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"0e660866-8fdb-4ed8-b0f5-37372d83bcd7"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 167, 3, 98, "Title",ExpressionUUID->"94162ea6-caff-4346-bc58-cc6452bdb91b"],
+Cell[750, 27, 184, 3, 53, "Subtitle",ExpressionUUID->"cc821316-2b40-4ca5-89ea-3b432c34742e"],
+Cell[CellGroupData[{
+Cell[959, 34, 158, 3, 67, "Section",ExpressionUUID->"96762c2c-0d2e-4d27-aa6f-d369827e4a38"],
+Cell[CellGroupData[{
+Cell[1142, 41, 219, 5, 54, "Subsection",ExpressionUUID->"6ff2fb1b-2e95-405d-a7dd-797ca2c76601"],
+Cell[1364, 48, 314, 8, 29, "Input",ExpressionUUID->"58598b00-9fa6-45e2-91a6-609137593e1d"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1715, 61, 172, 3, 54, "Subsection",ExpressionUUID->"e238b62a-2f8c-45b1-ad7a-c154bee2cfb2"],
+Cell[1890, 66, 3472, 78, 236, "Input",ExpressionUUID->"3ecb44fe-aad6-4bc6-a738-197bac10686a"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[5411, 150, 198, 3, 67, "Section",ExpressionUUID->"ecbd836e-22e1-416c-b192-275cf4dbabab"],
+Cell[5612, 155, 3542, 84, 401, "Input",ExpressionUUID->"5239b839-4ee6-4a32-a1ea-f8b52fad76ae"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[9191, 244, 165, 3, 67, "Section",ExpressionUUID->"92e05975-349b-4b5a-8fcc-f634cc78d007"],
+Cell[9359, 249, 1027, 27, 92, "Input",ExpressionUUID->"840f9d9b-cea1-4fca-bdc1-77d6dde9b470"],
+Cell[CellGroupData[{
+Cell[10411, 280, 450, 9, 29, "Input",ExpressionUUID->"23655f5c-3dfb-4a5e-97c2-95a7c4bfcd8a"],
+Cell[10864, 291, 1202, 21, 76, "Output",ExpressionUUID->"10ba5ced-5eb8-44c6-8fdc-e5eba8888de9"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
